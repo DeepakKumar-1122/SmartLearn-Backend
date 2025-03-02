@@ -32,7 +32,7 @@ async function generatePath(req, res) {
     
     const prompt = `
       Generate a personalized learning path for the course "${course}" at the "${difficulty}" level. 
-      The user prefers to study "${schedulingFrequency}" with a time commitment of "${timeCommitment}" hours per day. 
+      The user prefers to study "${schedulingFrequency}" with a time commitment of "${timeCommitment}" hours. 
       ${learningGoalsPart} ${preferredResourcesPart}
       Please structure the response as a JSON object with the following format:
       {
