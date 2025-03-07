@@ -30,7 +30,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import authRoutes from "./src/routes/auth.routes.js";
 import userRoutes from "./src/routes/user.routes.js";
-// import courseRoutes from "./routes/course.routes.js";
+import courseRoutes from "./src/routes/course.routes.js";
 
 dotenv.config();
 
@@ -43,7 +43,7 @@ app.use(cors());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
-// app.use("/api/courses", courseRoutes);
+app.use("/api/courses", courseRoutes);
 
 // Database connection
 const connectDB = async () => {

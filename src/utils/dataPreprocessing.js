@@ -1,39 +1,75 @@
+const resourceMapping = {
+  "video": "video",
+  "videos": "video",
+  "youtube videos": "video",
+  "youtube": "video",
+  "lecture videos": "video",
+  "article": "article",
+  "articles": "article",
+  "online articles": "article",
+  "blog": "article",
+  "interactive tutorial": "interactive tutorial",
+  "tutorial": "interactive tutorial",
+  "interactive learning": "interactive tutorial",
+};
+
+const normalizeResource = (resource) => {
+  const formatted = resource.trim().toLowerCase();
+  return resourceMapping[formatted] || null;
+};
+
 async function preprocessData(reqBody) {
-  // Extract parameters
   let {
-    course,
-    difficulty,
+    courseName,
+    difficultyLevel,
     schedulingFrequency,
     timeCommitment,
     learningGoals,
     preferredResources,
   } = reqBody;
 
-  // Data Cleaning
-  course = course?.trim();
-  difficulty = difficulty?.toLowerCase().trim();
+  if (typeof learningGoals === "string") {
+    learningGoals = learningGoals.split(",").map((goal) => goal.trim()).filter(Boolean);
+  }
+
+  if (typeof preferredResources === "string") {
+    preferredResources = preferredResources.split(",").map((resource) => resource.trim()).filter(Boolean);
+  }
+
+  // **Data Cleaning & Normalization**
+  courseName = courseName?.trim();
+  difficultyLevel = difficultyLevel?.toLowerCase().trim();
   schedulingFrequency = schedulingFrequency?.toLowerCase().trim();
-  timeCommitment = parseFloat(timeCommitment); // Ensure it's a number
+  timeCommitment = parseFloat(timeCommitment);
   learningGoals = Array.isArray(learningGoals)
-    ? learningGoals.map((goal) => goal.trim()).filter(Boolean) // Remove empty entries
+    ? [...new Set(learningGoals.map((goal) => goal.trim()))].filter(Boolean)
     : [];
   preferredResources = Array.isArray(preferredResources)
-    ? preferredResources.map((resource) => resource.trim().toLowerCase()).filter(Boolean)
+    ? [...new Set(preferredResources.map(normalizeResource))].filter(Boolean)
     : [];
 
-  // Data Validation
-  if (!course) throw new Error("Course name is required.");
-  if (!difficulty || !["beginner", "intermediate", "advanced"].includes(difficulty))
-    throw new Error("Invalid difficulty level. Choose beginner, intermediate, or advanced.");
-  if (!schedulingFrequency || !["daily", "weekly"].includes(schedulingFrequency))
-    throw new Error("Invalid scheduling frequency. Choose daily or weekly.");
-  if (isNaN(timeCommitment) || timeCommitment <= 0)
-    throw new Error("Time commitment must be a positive number.");
+  const errors = [];
 
-  // Data Transformation
+  if (!courseName || courseName.length < 3 || courseName.length > 100)
+    errors.push("Course name must be between 3 and 100 characters.");
+  if (!difficultyLevel || !["beginner", "intermediate", "advanced"].includes(difficultyLevel))
+    errors.push("Invalid difficulty level. Choose beginner, intermediate, or advanced.");
+  if (!schedulingFrequency || !["daily", "weekly"].includes(schedulingFrequency))
+    errors.push("Invalid scheduling frequency. Choose daily or weekly.");
+  if (isNaN(timeCommitment) || timeCommitment < 0.5 || timeCommitment > 24)
+    errors.push("Time commitment must be between 0.5 and 24 hours.");
+  if (learningGoals.length > 5)
+    errors.push("You can specify up to 5 learning goals.");
+  if (preferredResources.length === 0)
+    errors.push("At least one valid preferred resource is required.");
+
+  if (errors.length > 0) {
+    throw new Error(errors.join(" "));
+  }
+
   return {
-    course,
-    difficulty,
+    courseName,
+    difficultyLevel,
     schedulingFrequency,
     timeCommitment,
     learningGoals,
