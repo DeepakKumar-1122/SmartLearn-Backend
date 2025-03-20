@@ -28,6 +28,7 @@ async function preprocessData(reqBody) {
     preferredResources,
   } = reqBody;
 
+  console.log(courseName, difficultyLevel, schedulingFrequency, timeCommitment, learningGoals, preferredResources);
   if (typeof learningGoals === "string") {
     learningGoals = learningGoals.split(",").map((goal) => goal.trim()).filter(Boolean);
   }
