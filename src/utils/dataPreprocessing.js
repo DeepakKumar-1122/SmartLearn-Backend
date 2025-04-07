@@ -9,8 +9,12 @@ const resourceMapping = {
   "online articles": "article",
   "blog": "article",
   "interactive tutorial": "interactive tutorial",
+  "interactive tutorials": "interactive tutorial",
   "tutorial": "interactive tutorial",
+  "tutorials": "interactive tutorial",
   "interactive learning": "interactive tutorial",
+  "interactive learning tutorials": "interactive tutorial",
+  "interactive learning tutorial": "interactive tutorial",
 };
 
 const normalizeResource = (resource) => {
@@ -37,7 +41,6 @@ async function preprocessData(reqBody) {
     preferredResources = preferredResources.split(",").map((resource) => resource.trim()).filter(Boolean);
   }
 
-  // **Data Cleaning & Normalization**
   courseName = courseName?.trim();
   difficultyLevel = difficultyLevel?.toLowerCase().trim();
   schedulingFrequency = schedulingFrequency?.toLowerCase().trim();
@@ -61,8 +64,6 @@ async function preprocessData(reqBody) {
     errors.push("Time commitment must be between 0.5 and 24 hours.");
   if (learningGoals.length > 5)
     errors.push("You can specify up to 5 learning goals.");
-  if (preferredResources.length === 0)
-    errors.push("At least one valid preferred resource is required.");
 
   if (errors.length > 0) {
     throw new Error(errors.join(" "));

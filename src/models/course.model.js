@@ -17,15 +17,16 @@ const CourseSchema = new mongoose.Schema({
       resources: [
         {
           resourceType: { type: String, required: true },
-          resourceLink: { type: String, required: true }
+          resourceLink: { type: String, required: true },
+          completed: { type: Boolean, default: false }
         }
-      ],
-      completed: { type: Boolean, default: false }
+      ]
     }
   ],
   progress: {
     completionPercentage: { type: Number, default: 0 },
-    timeSpent: { type: Number, default: 0 }
+    timeSpent: { type: Number, default: 0 },
+    completedTopics: [{ type: mongoose.Schema.Types.ObjectId }]
   },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
