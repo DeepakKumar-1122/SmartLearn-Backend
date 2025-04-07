@@ -29,8 +29,6 @@ SmartLearn is a personalized learning platform that generates tailored learning 
 
 ```
 src/
-├── config/
-│   └── db.js
 ├── controllers/
 ├── middleware/
 ├── models/
